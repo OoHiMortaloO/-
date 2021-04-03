@@ -5,7 +5,34 @@ using namespace std;
 
 #define rep(i,n)	for(int i=0; i<n; i++)
 
-string map[19][19];
+string board[19][19];
+
+void chess_board(){
+	for(int i = 0; i < 19; i++){
+		for(int j = 0; j < 19; j++){
+			board[i][j] = '+';
+		}
+	}
+	for(int i = 0; i < 19; i++){
+		for(int j = 0; j < 19; j++){
+			cout << board[i][j];
+		}
+		cout << endl;
+	}
+}
+
+void new_screen(int xpos, int ypos) {
+    COORD scrn;
+    HANDLE hOuput = GetStdHandle(STD_OUTPUT_HANDLE);
+    scrn.X = xpos, scrn.Y = ypos;
+    SetConsoleCursorPosition(hOuput, scrn);
+    HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    CONSOLE_CURSOR_INFO CursorInfo;
+    GetConsoleCursorInfo(handle, &CursorInfo);
+    CursorInfo.bVisible = false;
+    SetConsoleCursorInfo(handle, &CursorInfo);
+}
 
 bool x_win(int x, int y, char player){
 	int count = 1;
@@ -81,43 +108,18 @@ bool check_chess(){
 
 }
 
-void user_input(){
-
+void user_input(int c, int x, int y){
+	if(c==119 || c==87) y+=1; //W
+    if(c==97 || c==65) x-=1; //A
+    if(c==115 || c==83) y-=1; //S
+    if(c==100 || c==68) x+=1; //D
+    if(c==114 || c==82) board[x][y] = 'X'; //put chess here //R
 }
 
-void new_screen(int xpos, int ypos) {
-    COORD scrn;
-    HANDLE hOuput = GetStdHandle(STD_OUTPUT_HANDLE);
-    scrn.X = xpos, scrn.Y = ypos;
-    SetConsoleCursorPosition(hOuput, scrn);
-    HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
-
-    CONSOLE_CURSOR_INFO CursorInfo;
-    GetConsoleCursorInfo(handle, &CursorInfo);
-    CursorInfo.bVisible = false;
-    SetConsoleCursorInfo(handle, &CursorInfo);
-}
-
-void chess_board(){
+void chess_board_print(){
 	for(int i = 0; i < 19; i++){
 		for(int j = 0; j < 19; j++){
-			map[i][j] = "＋";
-		}
-	}
-	for(int i = 0; i < 19; i++){
-		for(int j = 0; j < 19; j++){
-			cout << map[i][j];
-		}
-		cout << endl;
-	}
-
-	int x, y;
-	cin >> x >> y;
-	map[x][y] = "X";
-
-	for(int i = 0; i < 19; i++){
-		for(int j = 0; j < 19; j++){
-			cout << map[i][j];
+			cout << board[i][j];
 		}
 		cout << endl;
 	}
@@ -125,11 +127,14 @@ void chess_board(){
 
 int main(){
 
-	int x=0, y=0;
+	int x = 0, y = 0, c;
 	char white, black;
+	chess_board();
 	while(true){
 		if(who_wins()==false){
-
+			c = getch();
+			user_input(c, x, y);
+			chess_board_print();
 		}else break;
 	}
 
