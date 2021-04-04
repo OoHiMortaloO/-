@@ -104,16 +104,40 @@ bool who_wins(int x, int y, char player){
 	}else return false;
 }
 
-bool check_chess(){
-
+bool check_chess(int x, int y){
+	if(x==1 || y==1){
+		return false;
+	}else return true;
 }
 
-void user_input(int c, int x, int y){
+void black_input(int c, int x, int y){
 	if(c==119 || c==87) y+=1; //W
     if(c==97 || c==65) x-=1; //A
     if(c==115 || c==83) y-=1; //S
     if(c==100 || c==68) x+=1; //D
-    if(c==114 || c==82) board[x][y] = 'X'; //put chess here //R
+    if(c==114 || c==82){
+		board[x][y] = 'X'; //put chess here //R
+		x = 1; //array marking
+		y = 1;
+	}
+	if(check_chess(x, y) == false){
+		cout<<"You can't put the chess here!\n";
+	}
+}
+
+void white_input(int c, int x, int y){
+	if(c==119 || c==87) y+=1; //W
+    if(c==97 || c==65) x-=1; //A
+    if(c==115 || c==83) y-=1; //S
+    if(c==100 || c==68) x+=1; //D
+    if(c==114 || c==82){
+		board[x][y] = 'O'; //put chess here //R
+		x = 1; //array marking
+		y = 1;
+	}
+	if(check_chess(x, y) == false){
+		cout<<"You can't put the chess here!\n";
+	}
 }
 
 void chess_board_print(){
@@ -126,16 +150,18 @@ void chess_board_print(){
 }
 
 int main(){
+ios::sync_with_stdio(false);
+cin.tie(0);
 
-	int x = 0, y = 0, c;
+	new_screen();
+	int bx = 0, by = 0, wx = 0, wy = 0, c;
 	char white, black;
 	chess_board();
 	while(true){
-		if(who_wins()==false){
-			c = getch();
-			user_input(c, x, y);
-			chess_board_print();
-		}else break;
+		c = getch();
+		black_input(c, bx, by);
+		white_input(c, wx, wy);
+		chess_board_print();
 	}
 
 return 0;
