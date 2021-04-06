@@ -7,12 +7,21 @@ using namespace std;
 
 string board[19][19];
 
-void chess_board(){
+void show_board(){
 	for(int i = 0; i < 19; i++){
 		for(int j = 0; j < 19; j++){
 			board[i][j] = '+';
 		}
 	}
+	for(int i = 0; i < 19; i++){
+		for(int j = 0; j < 19; j++){
+			cout << board[i][j];
+		}
+		cout << endl;
+	}
+}
+
+void chess_board_print(){
 	for(int i = 0; i < 19; i++){
 		for(int j = 0; j < 19; j++){
 			cout << board[i][j];
@@ -37,68 +46,68 @@ void new_screen(int xpos, int ypos) {
 bool x_win(int x, int y, char player){
 	int count = 1;
 	for(int i=1;; ++i){
-		if(board[x+1][y]==player){
+		if(board[x+1][y] == player){
 			count++;
 		}else break;
 	}
 	for(int i=1;; ++i){
-		if(board[x-1][y]==player){
+		if(board[x-1][y] == player){
 			count++;
 		}else break;
 	}
-	if(count>=5) return true;
+	if(count >= 5) return true;
 	else return false;
 }
 
 bool y_win(int x, int y, char player){
 	int count = 1;
 	for(int i=1;; ++i){
-		if(board[x][y+1]==player){
+		if(board[x][y+1] == player){
 			count++;
 		}else break;
 	}
 	for(int i=1;; ++i){
-		if(board[x][y-1]==player){
+		if(board[x][y-1] == player){
 			count++;
 		}else break;
 	}
-	if(count>=5) return true;
+	if(count >= 5) return true;
 	else return false;
 }
 
 bool r_win(int x, int y, char player){
 	int count = 1;
 	for(int i=1;; ++i){
-		if(board[x+1][y+1]==player){
+		if(board[x+1][y+1] == player){
 			count++;
 		}else break;
 	}
 	for(int i=1;; ++i){
-		if(board[x-1][y-1]==player){
+		if(board[x-1][y-1] == player){
 			count++;
 		}else break;
 	}
-	if(count>=5) return true;
+	if(count >= 5) return true;
 	else return false;
 }
 
 bool l_win(int x, int y, char player){
 	int count = 1;
 	for(int i=1;; ++i){
-		if([x+1][y-1]==player){
+		if([x+1][y-1] == player){
 			count++;
 		}else break;
 	}
 	for(int i=1;; ++i){
-		if([x-1][y+1]==player){
+		if([x-1][y+1] == player){
 			count++;
 		}else break;
 	}
-	if(count>=5) return true;
+	if(count >= 5) return true;
 	else return false;
 }
 
-bool who_wins(int x, int y, char player){
+bool sb_wins(int x, int y, char player){
 	if(l_win(int x, int y, char player) || r_win(int x, int y, char player) || x_win(int x, int y, char player) || y_win(int x, int y, char player)){
 		return true;
 	}else return false;
@@ -123,6 +132,7 @@ void black_input(int c, int x, int y){
 	if(check_chess(x, y) == false){
 		cout<<"You can't put the chess here!\n";
 	}
+	return;
 }
 
 void white_input(int c, int x, int y){
@@ -138,14 +148,16 @@ void white_input(int c, int x, int y){
 	if(check_chess(x, y) == false){
 		cout<<"You can't put the chess here!\n";
 	}
+	return;
 }
 
-void chess_board_print(){
-	for(int i = 0; i < 19; i++){
-		for(int j = 0; j < 19; j++){
-			cout << board[i][j];
+bool map_full(){
+	for(int i=0; i<19; i++){
+		for(int j=0; j<19; j++){
+			if(board[i][j] == '+'){
+				return true;
+			}else return false;
 		}
-		cout << endl;
 	}
 }
 
@@ -155,8 +167,8 @@ cin.tie(0);
 
 	new_screen();
 	int bx = 0, by = 0, wx = 0, wy = 0, c;
-	char white, black;
-	chess_board();
+	char player = 'O';
+	show_board();
 	while(true){
 		c = getch();
 		black_input(c, bx, by);
