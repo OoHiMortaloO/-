@@ -5,23 +5,24 @@ using namespace std;
 
 #define rep(i,n)	for(int i=0; i<n; i++)
 
-string board[19][19];
+char board[19][19];
+int backend[19][19];
+int x, y;
 
-void show_board(){
-	for(int i = 0; i < 19; i++){
-		for(int j = 0; j < 19; j++){
-			board[i][j] = '+';
+void init_board_backend(){
+	rep(i, 19){
+		rep(j, 19){
+			backend[i][j] = 0;
 		}
 	}
 	for(int i = 0; i < 19; i++){
 		for(int j = 0; j < 19; j++){
-			cout << board[i][j];
+			board[i][j] = '¡Ï';
 		}
-		cout << endl;
 	}
 }
 
-void chess_board_print(){
+void show_board(){
 	for(int i = 0; i < 19; i++){
 		for(int j = 0; j < 19; j++){
 			cout << board[i][j];
@@ -43,15 +44,15 @@ void new_screen(int xpos, int ypos) {
     SetConsoleCursorInfo(handle, &CursorInfo);
 }
 
-bool x_win(int x, int y, char player){
+bool x_win(char player){
 	int count = 1;
 	for(int i=1;; ++i){
-		if(board[x+1][y] == player){
+		if(board[y][x+1] == player){
 			count++;
 		}else break;
 	}
 	for(int i=1;; ++i){
-		if(board[x-1][y] == player){
+		if(board[y][x-1] == player){
 			count++;
 		}else break;
 	}
@@ -59,15 +60,15 @@ bool x_win(int x, int y, char player){
 	else return false;
 }
 
-bool y_win(int x, int y, char player){
+bool y_win(char player){
 	int count = 1;
 	for(int i=1;; ++i){
-		if(board[x][y+1] == player){
+		if(board[y+1][x] == player){
 			count++;
 		}else break;
 	}
 	for(int i=1;; ++i){
-		if(board[x][y-1] == player){
+		if(board[y-1][x] == player){
 			count++;
 		}else break;
 	}
@@ -75,15 +76,15 @@ bool y_win(int x, int y, char player){
 	else return false;
 }
 
-bool r_win(int x, int y, char player){
+bool r_win(char player){
 	int count = 1;
 	for(int i=1;; ++i){
-		if(board[x+1][y+1] == player){
+		if(board[y+1][x+1] == player){
 			count++;
 		}else break;
 	}
 	for(int i=1;; ++i){
-		if(board[x-1][y-1] == player){
+		if(board[y-1][x-1] == player){
 			count++;
 		}else break;
 	}
@@ -91,15 +92,15 @@ bool r_win(int x, int y, char player){
 	else return false;
 }
 
-bool l_win(int x, int y, char player){
+bool l_win(char player){
 	int count = 1;
 	for(int i=1;; ++i){
-		if([x+1][y-1] == player){
+		if(board[y-1][x+1] == player){
 			count++;
 		}else break;
 	}
 	for(int i=1;; ++i){
-		if([x-1][y+1] == player){
+		if(board[y+1][x-1] == player){
 			count++;
 		}else break;
 	}
@@ -107,54 +108,51 @@ bool l_win(int x, int y, char player){
 	else return false;
 }
 
-bool sb_wins(int x, int y, char player){
-	if(l_win(int x, int y, char player) || r_win(int x, int y, char player) || x_win(int x, int y, char player) || y_win(int x, int y, char player)){
+bool sb_wins(char player){
+	if(l_win(player) || r_win(player) || x_win(player) || y_win(player)){
 		return true;
 	}else return false;
 }
 
-bool check_chess(int x, int y){
-	if(x==1 || y==1){
+bool check_chess(){
+	if(backend[y][x] == 1){
 		return false;
 	}else return true;
 }
 
-void black_input(int c, int x, int y){
-	if(c==119 || c==87) y+=1; //W
-    if(c==97 || c==65) x-=1; //A
-    if(c==115 || c==83) y-=1; //S
-    if(c==100 || c==68) x+=1; //D
+void black_input(int c){
+	if(c==119 || c==87) y--; //W
+    if(c==97 || c==65) x--; //A
+    if(c==115 || c==83) y++; //S
+    if(c==100 || c==68) x++; //D
     if(c==114 || c==82){
-		board[x][y] = 'X'; //put chess here //R
-		x = 1; //array marking
-		y = 1;
+		board[y][x] = 'X'; //put chess here //R
+		backend[y][x] = 1; //marking array
 	}
-	if(check_chess(x, y) == false){
+	if(check_chess() == false){
 		cout<<"You can't put the chess here!\n";
 	}
-	return;
 }
 
-void white_input(int c, int x, int y){
+void white_input(int c){
+	//out of map check
 	if(c==119 || c==87) y+=1; //W
     if(c==97 || c==65) x-=1; //A
     if(c==115 || c==83) y-=1; //S
     if(c==100 || c==68) x+=1; //D
     if(c==114 || c==82){
-		board[x][y] = 'O'; //put chess here //R
-		x = 1; //array marking
-		y = 1;
+		board[y][x] = 'O'; //put chess here //R
+		backend[y][x] = 1; //marking array
 	}
-	if(check_chess(x, y) == false){
+	if(check_chess() == false){
 		cout<<"You can't put the chess here!\n";
 	}
-	return;
 }
 
 bool map_full(){
 	for(int i=0; i<19; i++){
 		for(int j=0; j<19; j++){
-			if(board[i][j] == '+'){
+			if(board[i][j] == '¡Ï'){
 				return true;
 			}else return false;
 		}
@@ -166,13 +164,13 @@ ios::sync_with_stdio(false);
 cin.tie(0);
 
 	new_screen();
-	int bx = 0, by = 0, wx = 0, wy = 0, c;
-	char player = 'O';
-	show_board();
+	init_board_backend();
+	char black = 'X', white = 'O';
 	while(true){
 		c = getch();
-		black_input(c, bx, by);
-		white_input(c, wx, wy);
+		black_input(c);
+		show_board();
+		white_input(c);
 		chess_board_print();
 	}
 
