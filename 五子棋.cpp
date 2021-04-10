@@ -17,7 +17,7 @@ void init_board_backend(){
 	}
 	for(int i = 0; i < 19; i++){
 		for(int j = 0; j < 19; j++){
-			board[i][j] = '¡Ï';
+			board[i][j] = '+';
 		}
 	}
 }
@@ -120,58 +120,53 @@ bool check_chess(){
 	}else return true;
 }
 
-void black_input(int c){
+void user_input(int c){
 	if(c==119 || c==87) y--; //W
     if(c==97 || c==65) x--; //A
     if(c==115 || c==83) y++; //S
     if(c==100 || c==68) x++; //D
-    if(c==114 || c==82){
-		board[y][x] = 'X'; //put chess here //R
-		backend[y][x] = 1; //marking array
-	}
-	if(check_chess() == false){
-		cout<<"You can't put the chess here!\n";
-	}
-}
-
-void white_input(int c){
-	//out of map check
-	if(c==119 || c==87) y+=1; //W
-    if(c==97 || c==65) x-=1; //A
-    if(c==115 || c==83) y-=1; //S
-    if(c==100 || c==68) x+=1; //D
-    if(c==114 || c==82){
-		board[y][x] = 'O'; //put chess here //R
-		backend[y][x] = 1; //marking array
-	}
-	if(check_chess() == false){
-		cout<<"You can't put the chess here!\n";
-	}
 }
 
 bool map_full(){
+	int count = 0;
 	for(int i=0; i<19; i++){
 		for(int j=0; j<19; j++){
-			if(board[i][j] == '¡Ï'){
-				return true;
-			}else return false;
+			if(backend[j][i] == 1){
+				count++;
+			}
 		}
 	}
+	if(count == 361) //19 * 19
+		return true;
+	else return false;
 }
 
 int main(){
 ios::sync_with_stdio(false);
 cin.tie(0);
 
-	new_screen();
 	init_board_backend();
-	char black = 'X', white = 'O';
+	show_board();
+	char player = 'O';
+	// black = O, white = X
 	while(true){
+		int c;
 		c = getch();
-		black_input(c);
+		user_input(c);
+		if(c==114 || c==82){ //R
+			if(check_chess() == false){
+				cout<<"You can't put the chess here!\n";
+			}else{
+				board[y][x] = player; //put chess here
+				backend[y][x] = 1; //marking array
+				player = 'X'; //change player
+			}
+		}
+		if(sb_wins(player) == true || map_full() == true){
+			cout << player << " wins!";
+			break;
+		}
 		show_board();
-		white_input(c);
-		chess_board_print();
 	}
 
 return 0;
