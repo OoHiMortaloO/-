@@ -149,17 +149,24 @@ bool map_full(){
 	else return false;
 }
 
+struct plr{
+	char player;
+	char ifaf;
+};
+
 int main(){
 ios::sync_with_stdio(false);
 cin.tie(0);
 
 	init_board_backend();
 	show_board();
-	char player = 'O';
+	plr abcd;
+	abcd.player = 'O';
+	abcd.ifaf = 'X';
 	// black = O, white = X
 	while(true){
-		if(sb_wins(player) == true){
-			cout << player << " Victory !!!";
+		if(sb_wins(abcd.ifaf) == true || map_full() == true){
+			cout << abcd.ifaf << " Victory !!!";
 			break;
 		}else{
 			int c;
@@ -170,9 +177,16 @@ cin.tie(0);
 				if(check_chess() == false){
 					cout<<"You can't put the chess here!\n";
 				}else{
-					board[y][x] = player; //put chess here
+					board[y][x] = abcd.player; //put chess here
 					backend[y][x] = 1; //marking array
-					player = 'X'; //change player
+					if(abcd.player == 'X'){
+						abcd.player = 'O'; //change player
+						abcd.ifaf = 'X';
+					}
+					else if(abcd.player == 'O'){
+						abcd.player = 'X'; //change player
+						abcd.ifaf = 'O';
+					}
 				}
 			}
 			new_screen(0, 0);
@@ -180,6 +194,6 @@ cin.tie(0);
 		}
 	}
 	new_screen(0, 0);
-	
+
 return 0;
 }
